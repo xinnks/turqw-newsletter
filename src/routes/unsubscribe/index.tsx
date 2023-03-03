@@ -1,7 +1,8 @@
 import { component$, useSignal } from "@builder.io/qwik";
 
+// This is a test component included for demonstrational purposes when performing the unsubscription process
 export default component$(() => {
-  const subscribedEmail = useSignal("foody@jamesinkala.com");
+  const subscribedEmail = useSignal(""); // Provide a test email here
   const subscribedWebsite = useSignal("localhost:3000/");
 
   return (
