@@ -1,10 +1,6 @@
-# Qwik City App ⚡️
+# TurQw Newsletter
 
-- [Qwik Docs](https://qwik.builder.io/)
-- [Discord](https://qwik.builder.io/chat)
-- [Qwik GitHub](https://github.com/BuilderIO/qwik)
-- [@QwikDev](https://twitter.com/QwikDev)
-- [Vite](https://vitejs.dev/)
+A newsletter manager built using [Qwik](https://qwik.builder.io/) and [Turso](https://chiselstrike.com)
 
 ---
 
@@ -45,6 +41,13 @@ Development mode uses [Vite's development server](https://vitejs.dev/). During d
 ```shell
 npm start # or `yarn start`
 ```
+
+## Turso
+
+To set up Turso, [install it](https://jamesinkala.com/blog/early-impressions-of-turso-the-edge-database-from-chiselstrike/#installing-turso), and do the following:
+- Rename the `sample.env` file to `.env`. 
+- [Create a Turso database](https://jamesinkala.com/blog/early-impressions-of-turso-the-edge-database-from-chiselstrike/#creating-a-new-database), and assign it's URL to the `VITE_DB_URL` environment.
+- Proceed to using the newsletter.
 
 > Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
 
