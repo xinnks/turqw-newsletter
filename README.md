@@ -45,7 +45,8 @@ npm start # or `yarn start`
 ## Turso
 
 To set up Turso, [install it](https://jamesinkala.com/blog/early-impressions-of-turso-the-edge-database-from-chiselstrike/#installing-turso), and do the following:
-- Rename the `sample.env` file to `.env`. 
+
+- Rename the `sample.env` file to `.env`.
 - [Create a Turso database](https://jamesinkala.com/blog/early-impressions-of-turso-the-edge-database-from-chiselstrike/#creating-a-new-database), and assign it's URL to the `VITE_DB_URL` environment.
 - Proceed to using the newsletter.
 
