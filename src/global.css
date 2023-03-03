@@ -1,0 +1,29 @@
+/**
+ * WHAT IS THIS FILE?
+ *
+ * Globally applied styles. No matter which components are in the page or matching route,
+ * the styles in here will be applied to the Document, without any sort of CSS scoping.
+ *
+ */
+
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+@layer {
+  .gradient-text {
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+    background-image: linear-gradient(
+      135deg,
+      #349dc3 1.93%,
+      #06087f 48.09%,
+      #00bba2 97.3%
+    );
+  }
+
+  a {
+    @apply text-red-700 hover:text-red-600;
+  }
+}
