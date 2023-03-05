@@ -10,7 +10,7 @@ import { connect } from "@libsql/client";
 const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
 
 /**
- * @description Initiates database tables and indexes at the server stage
+ * @description Initiates database tables and indexes at the server stage if this step was not done using the Turso CLI's SQL shell
  */
 export const useInitiateNewsletterTable = routeLoader$(async () => {
   const db = connect({
