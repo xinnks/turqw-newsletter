@@ -30,7 +30,7 @@ export default component$(() => {
     });
     const deleteRecord = await db.execute(
       "delete from newsletters where email = ? and website like ?",
-      [email.value, `%${domain.value}`]
+      [email.value, domain.value]
     );
 
     if (!deleteRecord.success) {
