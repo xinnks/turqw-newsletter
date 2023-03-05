@@ -54,7 +54,7 @@ export default component$(() => {
       <tr>
         <td
           class="whitespace-nowrap px-6 py-4 font-medium hover:bg-gray-300 text-center"
-          colSpan={3}
+          colSpan={4}
         >
           No subscribers found
         </td>
@@ -78,7 +78,7 @@ export default component$(() => {
   };
 
   return (
-    <div class="flex flex-col space-y-8 p-8 justify-center items-center">
+    <div class="flex flex-col space-y-8 p-8 justify-center items-center max-w-4xl mx-auto">
       <h1 class="text-2xl font-semibold">Newsletter Subscribers</h1>
 
       <Resource
