@@ -8,9 +8,6 @@ import {
 import { type DocumentHead, server$, useLocation } from "@builder.io/qwik-city";
 import { connect } from "@libsql/client";
 import { LoadingAnimation, Noty } from "~/routes";
-const db = connect({
-  url: import.meta.env.VITE_DB_URL,
-});
 
 export default component$(() => {
   const location = useLocation();
@@ -28,6 +25,9 @@ export default component$(() => {
    * @returns {Object}
    */
   const unsubscribeFromNewsletter = server$(async () => {
+    const db = connect({
+      url: import.meta.env.VITE_DB_URL,
+    });
     const deleteRecord = await db.execute(
       "delete from newsletters where email = ? and website like ?",
       [email.value, `%${domain.value}`]
