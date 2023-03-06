@@ -3,7 +3,6 @@ import {
   component$,
   Resource,
   useResource$,
-  useSignal,
 } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { connect } from "@libsql/client";
