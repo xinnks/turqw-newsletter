@@ -33,7 +33,7 @@ export const useInitiateNewsletterTable = routeLoader$(async () => {
  * @param {string} email
  * @param {string} newsletter
  */
-export const subscribeToNewsletter = server$(async (email, newsletter) => {
+export const subscribeToNewsletter = server$(async (email: string, newsletter: string) => {
   if (!email || !newsletter) {
     return {
       success: false,

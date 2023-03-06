@@ -14,7 +14,7 @@ const db = connect({
 
 interface ResourceResponse {
   message: string;
-  data: [];
+  data: NewsletterSubscriber[];
 }
 
 /**
@@ -45,10 +45,9 @@ export default component$(() => {
 
   /**
    * @description Subscriber rows extracted component
-   * @param {Array} subscribers
    * @returns
    */
-  const subscriberRows = (subscribers: []) => {
+  const subscriberRows = (subscribers: NewsletterSubscriber[]) => {
     return subscribers?.length < 1 ? (
       <tr>
         <td
