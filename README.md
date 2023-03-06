@@ -89,3 +89,8 @@ The production build will generate client and server modules by running both cli
 ```shell
 pnpm build # or `yarn build`
 ```
+
+## License
+
+This code is open sourced under the [MIT
+license](https://en.wikipedia.org/wiki/MIT_License).
