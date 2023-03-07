@@ -1,5 +1,4 @@
 import {
-  $,
   component$,
   useBrowserVisibleTask$,
   useSignal,
