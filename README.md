@@ -5,18 +5,6 @@ A newsletter manager built using [Qwik](https://qwik.builder.io/) and
 
 ---
 
-## Turso
-
-To set up Turso, [install
-it](https://jamesinkala.com/blog/early-impressions-of-turso-the-edge-database-from-chiselstrike/#installing-turso),
-and do the following:
-
-- Rename the `sample.env` file to `.env`.
-- [Create a Turso
-  database](https://jamesinkala.com/blog/early-impressions-of-turso-the-edge-database-from-chiselstrike/#creating-a-new-database),
-  and assign it's URL to the `VITE_DB_URL` environment.
-- Proceed to using the newsletter.
-
 ## Setting up the Turso database
 
 To set up Turso, install it:
@@ -28,7 +16,8 @@ Brew install chiselstrike/tap/turso
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
-[Join the ChiselStrike private beta](https://chiselstrike.com) to acquire use access.
+[Join the ChiselStrike private beta](https://chiselstrike.com) to acquire
+use access.
 
 Create a new Turso database:
 
@@ -42,24 +31,27 @@ Open the database using the Turso CLI’s SQL shell:
 turso db shell DATABASE_NAME
 ```
 
-Get the URL to the Turso database shown when opening the database using this command.
+Get the URL to the Turso database shown when opening the database using
+this command.
 
 ![Turso db shell command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/Turso_edge_db_url_-_db_shell_command.jpg)
 
-We can obtain the Turso database URL by running the `turso db list` or `turso db show` commands.
+We can obtain the Turso database URL by running the `turso db list` or
+`turso db show` commands.
 
 ![Turso db list command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192235/chiselstrike-assets/Turso_edge_db_url_-_db_list_command.jpg)
 
 Then, do the following:
 - Rename the `sample.env` file to `.env`.
-- Assign the database URL obtained in the previous step to the `VITE_DB_URL` environment variable.
+- Assign the database URL obtained in the previous step to the `VITE_DB_URL`
+environment variable.
 
 ## Project Structure
 
 This project is using Qwik with
-[QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just a extra
-set of tools on top of Qwik to make it easier to build a full site, including
-directory-based routing, layouts, and more.
+[QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just an
+extra set of tools on top of Qwik to make it easier to build a full site,
+including directory-based routing, layouts, and more.
 
 Inside your project, you'll see the following directory structure:
 
@@ -110,7 +102,9 @@ npm run preview # or `yarn preview`
 
 ## Production
 
-The production build will generate client and server modules by running both client and server build commands. Additionally, the build command will use Typescript to run a type check on the source code.
+The production build will generate client and server modules by running both
+client and server build commands. Additionally, the build command will use
+Typescript to run a type check on the source code.
 
 ```shell
 npm run build # or `yarn build`
