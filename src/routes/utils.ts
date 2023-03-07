@@ -12,14 +12,6 @@ export function responseDataAdapter(data: ResultSet): NewsletterSubscriber[] {
   const { columns, rows } = data;
   const formattedData: NewsletterSubscriber[] = [];
 
-    // This code is potentially error-prone because it assumes an iteration order for columns.keys().
-    // The SDK doesn't explicitly provide that guarantee.
-  //   for (const key of columns.keys()) {
-  //     rowData[columns[key]] = row[key];
-  //   }
-  //   formattedData.push(rowData);
-  // }
-
   for (const row of rows) {
     const rowData: { [k: string]: SqlValue } = {};
     for (let i = 0; i < columns.length; i++) {
