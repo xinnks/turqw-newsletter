@@ -46,6 +46,65 @@ Then, do the following:
 - Assign the database URL obtained in the previous step to the `VITE_DB_URL`
 environment variable.
 
+## Setting up a local SQLite database file
+
+If you do not have access to the private beta, you can run this project using a
+local SQLite database file. Follow these instructions to do so:
+- [Download and install SQLite](https://www.sqlite.org/download.html) if it is
+  not already installed on your machine.
+- Run the `sqlite3 DB_NAME` command to create an SQLite file database to work
+with. Local SQLite database creation process ![SQLite database
+  creation](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/SQLite3_database_creation.jpg)
+- Assign the local SQLite database’s file location to the DB_URL environment.
+  ```
+  VITE_DB_URL=file:PATH_TO_LOCAL_DB
+  ```
+
+> We are running the `.database` command in the above demonstration to see if
+> our database file was successfully created.
+
+### Adding the newsletter table
+
+Add a newsletters table with the following definition:
+
+*On the Turso SQL shell:*
+```sql
+create table newsletters(
+	id integer primary key,
+	email varchar(255) not null,
+	website varchar(50) not null,
+	created_at integer default (cast(unixepoch() as int))
+)
+```
+
+*On the local SQLite file database:*
+```sh
+sqlite3 db/turqw.db "create table newsletters( id integer primary key, email varchar(255) not null, website varchar(50) not null, created_at integer default (cast(unixepoch() as int)))"
+```
+
+Add two indexes: `index_newsletters_website` and
+`index_newsletters_unique_email_website`, that will help speed up queries
+involving the `website` and `email` columns respectively, and prevent us from
+adding duplicate data.
+
+*On the Turso SQL shell:*
+```sql
+-- website column index
+create index index_newsletters_website on newsletters (website);
+
+-- email, website columns unique index
+create unique index index_unique_newsletters_email_website on newsletters(email, website);
+```
+
+*On the local SQLite file database:*
+```sh
+# website column index
+sqlite3 db/turqw.db "create index index_newsletters_website on newsletters (website)"
+
+# email, website columns unique index
+sqlite3 db/turqw.db "create unique index index_unique_newsletters_email_website on newsletters(email, website)"
+```
+
 ## Qwik
 
 > This project is built using [Qwik](https://qwik.builder.io/), cloning it means you do not need to go through the following steps.
