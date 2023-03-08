@@ -10,25 +10,6 @@ import { connect } from "@libsql/client";
 const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
 
 /**
- * @description Initiates database tables and indexes at the server stage if this step was not done using the Turso CLI's SQL shell
- */
-export const useInitiateNewsletterTable = routeLoader$(async () => {
-  const db = connect({
-    url: import.meta.env.VITE_DB_URL,
-  });
-
-  await db.execute(
-    "create table if not exists newsletters(id integer primary key, email varchar(50), website varchar(50), created_at integer default (cast(unixepoch() as int)) )"
-  );
-  await db.execute(
-    "create index if not exists index_newsletters_website on newsletters (website)"
-  );
-  await db.execute(
-    "create unique index if not exists index_unique_newsletters_email_website on newsletters(email, website)"
-  );
-});
-
-/**
  * @description Stores user subscription data into database
  * @param {string} email
  * @param {string} newsletter
@@ -100,9 +81,6 @@ export const LoadingAnimation = () => {
 };
 
 export default component$(() => {
-  // Use loader to create newsletter table if not present
-  useInitiateNewsletterTable();
-
   const email = useSignal("");
   const loading = useSignal(false);
   const emailRegex = /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi;
