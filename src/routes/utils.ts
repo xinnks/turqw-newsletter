@@ -6,7 +6,7 @@ import type { ResultSet, SqlValue } from "@libsql/client";
  */
 export function responseDataAdapter(data: ResultSet): NewsletterSubscriber[] {
   if (!data?.columns || !data?.rows) {
-    throw new Error("Malformed response from turso")
+    throw new Error("Malformed response from turso");
   }
 
   const { columns, rows } = data;

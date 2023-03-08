@@ -1,9 +1,5 @@
 import { component$, useSignal, useStore } from "@builder.io/qwik";
-import {
-  type DocumentHead,
-  routeLoader$,
-  server$,
-} from "@builder.io/qwik-city";
+import { type DocumentHead, server$ } from "@builder.io/qwik-city";
 import { responseDataAdapter } from "./utils";
 import { connect } from "@libsql/client";
 
@@ -14,42 +10,44 @@ const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
  * @param {string} email
  * @param {string} newsletter
  */
-export const subscribeToNewsletter = server$(async (email: string, newsletter: string) => {
-  if (!email || !newsletter) {
-    return {
-      success: false,
-      message: "Email cannot be empty!",
-    };
-  }
-
-  const db = connect({
-    url: import.meta.env.VITE_DB_URL,
-  });
-
-  // Insert record
-  await db.execute("insert into newsletters(email, website) values(?, ?)", [
-    email,
-    newsletter,
-  ]);
-
-  // Query record
-  const response = await db.execute(
-    "select * from newsletters where email = ? and website = ?",
-    [email, newsletterBlog]
-  );
-
-  const subscriber = responseDataAdapter(response);
-
-  return subscriber[0]
-    ? {
-        success: true,
-        message: "You've been subscribed!",
-      }
-    : {
+export const subscribeToNewsletter = server$(
+  async (email: string, newsletter: string) => {
+    if (!email || !newsletter) {
+      return {
         success: false,
-        message: "Sorry something isn't right, please retry!",
+        message: "Email cannot be empty!",
       };
-});
+    }
+
+    const db = connect({
+      url: import.meta.env.VITE_DB_URL,
+    });
+
+    // Insert record
+    await db.execute("insert into newsletters(email, website) values(?, ?)", [
+      email,
+      newsletter,
+    ]);
+
+    // Query record
+    const response = await db.execute(
+      "select * from newsletters where email = ? and website = ?",
+      [email, newsletterBlog]
+    );
+
+    const subscriber = responseDataAdapter(response);
+
+    return subscriber[0]
+      ? {
+          success: true,
+          message: "You've been subscribed!",
+        }
+      : {
+          success: false,
+          message: "Sorry something isn't right, please retry!",
+        };
+  }
+);
 
 /**
  * @description Notification component

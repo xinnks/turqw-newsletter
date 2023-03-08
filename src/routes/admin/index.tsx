@@ -1,9 +1,4 @@
-import {
-  $,
-  component$,
-  Resource,
-  useResource$,
-} from "@builder.io/qwik";
+import { $, component$, Resource, useResource$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
 import { connect } from "@libsql/client";
 import { type NewsletterSubscriber, responseDataAdapter } from "~/routes/utils";
