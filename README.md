@@ -46,6 +46,45 @@ Then, do the following:
 - Assign the database URL obtained in the previous step to the `VITE_DB_URL`
 environment variable.
 
+## Qwik
+
+> This project is built using [Qwik](https://qwik.builder.io/), cloning it means you do not need to go through the following steps.
+
+Here are the steps to create a new Qwik project.
+
+Run the following npm create command:
+
+```sh
+npm create qwik@latest
+```
+
+Follow the prompt using the CLI tool picking `basic app (Qwik city)` as the starter app.
+
+![Create a Qwik project](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261529/chiselstrike-assets/1-creating-a-qwik-project.gif)
+
+Next, cd into the project’s directory and run the dev script:
+
+```
+npm run dev --port 3000
+```
+
+We pass the `—port` flag to specify the port we want to have our app served on.
+
+To streamline serving the local project on the `3000` port, update the `dev` script on `package.json` as follows:
+
+```
+// package.json
+{
+    "scripts":{
+        "dev": "vite --mode ssr --port 3000"
+    }
+}
+```
+
+After running the `dev` script, visit `localhost:3000` on your browser, and you should see the following page.
+
+![Qwik app start](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261662/chiselstrike-assets/2-Qwik-app-start.png)
+
 ## Project Structure
 
 This project is using Qwik with
