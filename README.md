@@ -8,6 +8,7 @@ A newsletter manager built using [Qwik](https://qwik.builder.io/) and
 ## Setting up the Turso database
 
 To set up Turso, install it:
+
 ```bash
 # On Mac
 Brew install chiselstrike/tap/turso
@@ -16,8 +17,8 @@ Brew install chiselstrike/tap/turso
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
-[Join the ChiselStrike private beta](https://chiselstrike.com) to acquire
-use access.
+[Join the ChiselStrike private beta](https://chiselstrike.com) to acquire use
+access.
 
 Create a new Turso database:
 
@@ -31,30 +32,34 @@ Open the database using the Turso CLI’s SQL shell:
 turso db shell DATABASE_NAME
 ```
 
-Get the URL to the Turso database shown when opening the database using
-this command.
+Get the URL to the Turso database shown when opening the database using this
+command.
 
-![Turso db shell command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/Turso_edge_db_url_-_db_shell_command.jpg)
+![Turso db shell
+command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/Turso_edge_db_url_-_db_shell_command.jpg)
 
-We can obtain the Turso database URL by running the `turso db list` or
-`turso db show` commands.
+We can obtain the Turso database URL by running the `turso db list` or `turso db
+show` commands.
 
-![Turso db list command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192235/chiselstrike-assets/Turso_edge_db_url_-_db_list_command.jpg)
+![Turso db list
+command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192235/chiselstrike-assets/Turso_edge_db_url_-_db_list_command.jpg)
 
 Then, do the following:
+
 - Rename the `sample.env` file to `.env`.
 - Assign the database URL obtained in the previous step to the `VITE_DB_URL`
-environment variable.
+  environment variable.
 
 ## Setting up a local SQLite database file
 
 If you do not have access to the private beta, you can run this project using a
 local SQLite database file. Follow these instructions to do so:
+
 - [Download and install SQLite](https://www.sqlite.org/download.html) if it is
   not already installed on your machine.
 - Run the `sqlite3 DB_NAME` command to create an SQLite file database to work
-with. Local SQLite database creation process ![SQLite database
-  creation](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/SQLite3_database_creation.jpg)
+  with. Local SQLite database creation process ![SQLite database
+creation](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/SQLite3_database_creation.jpg)
 - Assign the local SQLite database’s file location to the DB_URL environment.
   ```
   VITE_DB_URL=file:PATH_TO_LOCAL_DB
@@ -67,7 +72,8 @@ with. Local SQLite database creation process ![SQLite database
 
 Add a newsletters table with the following definition:
 
-*On the Turso SQL shell:*
+_On the Turso SQL shell:_
+
 ```sql
 create table newsletters(
 	id integer primary key,
@@ -77,7 +83,8 @@ create table newsletters(
 )
 ```
 
-*On the local SQLite file database:*
+_On the local SQLite file database:_
+
 ```sh
 sqlite3 db/turqw.db "create table newsletters( id integer primary key, email varchar(255) not null, website varchar(50) not null, created_at integer default (cast(unixepoch() as int)))"
 ```
@@ -87,7 +94,8 @@ Add two indexes: `index_newsletters_website` and
 involving the `website` and `email` columns respectively, and prevent us from
 adding duplicate data.
 
-*On the Turso SQL shell:*
+_On the Turso SQL shell:_
+
 ```sql
 -- website column index
 create index index_newsletters_website on newsletters (website);
@@ -96,7 +104,8 @@ create index index_newsletters_website on newsletters (website);
 create unique index index_unique_newsletters_email_website on newsletters(email, website);
 ```
 
-*On the local SQLite file database:*
+_On the local SQLite file database:_
+
 ```sh
 # website column index
 sqlite3 db/turqw.db "create index index_newsletters_website on newsletters (website)"
@@ -107,7 +116,8 @@ sqlite3 db/turqw.db "create unique index index_unique_newsletters_email_website 
 
 ## Qwik
 
-> This project is built using [Qwik](https://qwik.builder.io/), cloning it means you do not need to go through the following steps.
+> This project is built using [Qwik](https://qwik.builder.io/), cloning it means
+> you do not need to go through the following steps.
 
 Here are the steps to create a new Qwik project.
 
@@ -117,9 +127,11 @@ Run the following npm create command:
 npm create qwik@latest
 ```
 
-Follow the prompt using the CLI tool picking `basic app (Qwik city)` as the starter app.
+Follow the prompt using the CLI tool picking `basic app (Qwik city)` as the
+starter app.
 
-![Create a Qwik project](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261529/chiselstrike-assets/1-creating-a-qwik-project.gif)
+![Create a Qwik
+project](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261529/chiselstrike-assets/1-creating-a-qwik-project.gif)
 
 Next, cd into the project’s directory and run the dev script:
 
@@ -129,7 +141,8 @@ npm run dev --port 3000
 
 We pass the `—port` flag to specify the port we want to have our app served on.
 
-To streamline serving the local project on the `3000` port, update the `dev` script on `package.json` as follows:
+To streamline serving the local project on the `3000` port, update the `dev`
+script on `package.json` as follows:
 
 ```
 // package.json
@@ -140,9 +153,11 @@ To streamline serving the local project on the `3000` port, update the `dev` scr
 }
 ```
 
-After running the `dev` script, visit `localhost:3000` on your browser, and you should see the following page.
+After running the `dev` script, visit `localhost:3000` on your browser, and you
+should see the following page.
 
-![Qwik app start](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261662/chiselstrike-assets/2-Qwik-app-start.png)
+![Qwik app
+start](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261662/chiselstrike-assets/2-Qwik-app-start.png)
 
 ## Project Structure
 
