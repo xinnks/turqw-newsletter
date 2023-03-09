@@ -41,3 +41,4 @@ lerna-debug.log*
 .env
 .turso
 *.db
+.turso_history
