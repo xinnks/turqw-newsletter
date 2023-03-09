@@ -1,78 +1,75 @@
 # TurQw Newsletter
 
-A newsletter manager built using [Qwik](https://qwik.builder.io/) and
-[Turso](https://chiselstrike.com)
+A newsletter manager built using [Qwik] and [Turso].
 
----
+For a walkthrough of how Turso works with Qwik in this application, [read my post
+on Medium].
 
-## Setting up the Turso database
+# Instructions
 
-To set up Turso, install it:
+The following instructions assume that you have cloned this repo.
+
+## Choose a local or remote backend
+
+You can run this application in one of two ways:
+
+- [Using a hosted Turso database](#using-a-hosted-turso-database) (recommended)
+- [Using a local SQLite database](#using-a-local-sqlite-database)
+
+### Using a hosted Turso database
+
+Currently, in order to use Turso, you must [join the Turso private beta] to
+request early access.
+
+#### 1. Install the Turso CLI
+
+Use one of the following commands:
 
 ```bash
-# On Mac
-Brew install chiselstrike/tap/turso
+# On macOS or Linux with Homebrew
+brew install chiselstrike/tap/turso
 
-# linux script
+# Manual scripted installation
 curl -sSfL https://get.tur.so/install.sh | bash
 ```
 
-[Join the ChiselStrike private beta](https://chiselstrike.com) to acquire use
-access.
+#### 2. Create a Turso database using the CLI
 
-Create a new Turso database:
+This example uses the name "turqw", but you can choose any name:
 
 ```sh
-turso db create DATABASE_NAME
+turso db create turqw
 ```
 
 Open the database using the Turso CLI’s SQL shell:
 
 ```sh
-turso db shell DATABASE_NAME
+turso db shell turqw
 ```
+
+#### 3. Configure the application with the Turso URL
 
 Get the URL to the Turso database shown when opening the database using this
 command.
 
-![Turso db shell
-command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/Turso_edge_db_url_-_db_shell_command.jpg)
+![Turso db shell command]
 
 We can obtain the Turso database URL by running the `turso db list` or `turso db
 show` commands.
 
-![Turso db list
-command](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192235/chiselstrike-assets/Turso_edge_db_url_-_db_list_command.jpg)
+![Turso db list command]
 
 Then, do the following:
 
-- Rename the `sample.env` file to `.env`.
+- Rename the file `sample.env` to `.env`.
 - Assign the database URL obtained in the previous step to the `VITE_DB_URL`
   environment variable.
 
-## Setting up a local SQLite database file
+#### 4. Create the newsletters table
 
-If you do not have access to the private beta, you can run this project using a
-local SQLite database file. Follow these instructions to do so:
+Run `turso db shell turqw` to start an interactive shell with Turso.
 
-- [Download and install SQLite](https://www.sqlite.org/download.html) if it is
-  not already installed on your machine.
-- Run the `sqlite3 DB_NAME` command to create an SQLite file database to work
-  with. Local SQLite database creation process ![SQLite database
-creation](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/SQLite3_database_creation.jpg)
-- Assign the local SQLite database’s file location to the DB_URL environment.
-  ```
-  VITE_DB_URL=file:PATH_TO_LOCAL_DB
-  ```
-
-> We are running the `.database` command in the above demonstration to see if
-> our database file was successfully created.
-
-### Adding the newsletter table
-
-Add a newsletters table with the following definition:
-
-_On the Turso SQL shell:_
+Copy and paste the following table definition into the shell:
 
 ```sql
 create table newsletters(
@@ -80,21 +77,10 @@ create table newsletters(
 	email varchar(255) not null,
 	website varchar(50) not null,
 	created_at integer default (cast(unixepoch() as int))
-)
+);
 ```
 
-_On the local SQLite file database:_
-
-```sh
-sqlite3 db/turqw.db "create table newsletters( id integer primary key, email varchar(255) not null, website varchar(50) not null, created_at integer default (cast(unixepoch() as int)))"
-```
-
-Add two indexes: `index_newsletters_website` and
-`index_newsletters_unique_email_website`, that will help speed up queries
-involving the `website` and `email` columns respectively, and prevent us from
-adding duplicate data.
-
-_On the Turso SQL shell:_
+Copy and paste the following statements to create indexes for that table:
 
 ```sql
 -- website column index
@@ -104,7 +90,45 @@ create index index_newsletters_website on newsletters (website);
 create unique index index_unique_newsletters_email_website on newsletters(email, website);
 ```
 
-_On the local SQLite file database:_
+### Using a local SQLite database
+
+If you do not have access to the private beta, you can run this project using a
+local SQLite database file.
+
+#### 1. Install SQLite
+
+[Download and install SQLite] if it is not already installed on your machine.
+
+#### 2. Create the database
+
+Run the command `sqlite3 db/turqw.db` to create an SQLite file database to work
+with.
+
+![SQLite database creation]
+
+<aside class="notice">
+We are running the `.database` command in the above demonstration to see if
+our database file was successfully created.
+</aside>
+
+#### 3. Configure the application with the path to the local database
+
+- Rename the file `sample.env` to `.env`.
+- Assign the to the database to the `VITE_DB_URL` environment variable.
+
+```
+VITE_DB_URL=db/turqw.db
+```
+
+#### 4. Create the newsletters table
+
+Run the following command to create the table:
+
+```sh
+sqlite3 db/turqw.db "create table newsletters( id integer primary key, email varchar(255) not null, website varchar(50) not null, created_at integer default (cast(unixepoch() as int)))"
+```
+
+And these commands to add indexes:
 
 ```sh
 # website column index
@@ -114,57 +138,11 @@ sqlite3 db/turqw.db "create index index_newsletters_website on newsletters (webs
 sqlite3 db/turqw.db "create unique index index_unique_newsletters_email_website on newsletters(email, website)"
 ```
 
-## Qwik
-
-> This project is built using [Qwik](https://qwik.builder.io/), cloning it means
-> you do not need to go through the following steps.
-
-Here are the steps to create a new Qwik project.
-
-Run the following npm create command:
-
-```sh
-npm create qwik@latest
-```
-
-Follow the prompt using the CLI tool picking `basic app (Qwik city)` as the
-starter app.
-
-![Create a Qwik
-project](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261529/chiselstrike-assets/1-creating-a-qwik-project.gif)
-
-Next, cd into the project’s directory and run the dev script:
-
-```
-npm run dev --port 3000
-```
-
-We pass the `—port` flag to specify the port we want to have our app served on.
-
-To streamline serving the local project on the `3000` port, update the `dev`
-script on `package.json` as follows:
-
-```
-// package.json
-{
-    "scripts":{
-        "dev": "vite --mode ssr --port 3000"
-    }
-}
-```
-
-After running the `dev` script, visit `localhost:3000` on your browser, and you
-should see the following page.
-
-![Qwik app
-start](https://res.cloudinary.com/djx5h4cjt/image/upload/v1678261662/chiselstrike-assets/2-Qwik-app-start.png)
-
 ## Project Structure
 
-This project is using Qwik with
-[QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just an
-extra set of tools on top of Qwik to make it easier to build a full site,
-including directory-based routing, layouts, and more.
+This project is using Qwik with [QwikCity]. QwikCity is just an extra set of
+tools on top of Qwik to make it easier to build a full site, including
+directory-based routing, layouts, and more.
 
 Inside your project, you'll see the following directory structure:
 
@@ -180,20 +158,18 @@ Inside your project, you'll see the following directory structure:
 
 - `src/routes`: Provides the directory based routing, which can include a
   hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page.
-  Additionally, `index.ts` files are endpoints. Please see the [routing
-  docs](https://qwik.builder.io/qwikcity/routing/overview/) for more info.
+  Additionally, `index.ts` files are endpoints. Please see the [Qwik routing
+  docs] for more info.
 
 - `src/components`: Recommended directory for components.
 
 - `public`: Any static assets, like images, can be placed in the public
-  directory. Please see the [Vite public
-  directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more
-  info.
+  directory. Please see the [Vite public directory] for more info.
 
-## Development
+## Running locally
 
-Development mode uses [Vite's development server](https://vitejs.dev/). During
-development, the `dev` command will server-side render (SSR) the output.
+Development mode uses [Vite's development server]. During development, the `dev`
+command will server-side render (SSR) the output.
 
 ```shell
 npm run start # or `yarn start`
@@ -210,8 +186,10 @@ should not be used as a production server.
 npm run preview # or `yarn preview`
 ```
 
-> Note: during dev mode, Vite may request a significant number of `.js` files.
-> This does not represent a Qwik production build.
+<aside class="notice">
+Note: during dev mode, Vite may request a significant number of `.js` files.
+This does not represent a Qwik production build.
+</aside>
 
 ## Production
 
@@ -225,5 +203,20 @@ npm run build # or `yarn build`
 
 ## License
 
-This code is open sourced under the [MIT
-license](https://en.wikipedia.org/wiki/MIT_License).
+This code is open sourced under the [MIT license].
+
+
+[Qwik]: https://qwik.builder.io/
+[Turso]: https://chiselstrike.com/
+[read my post on Medium]: https://blog.chiselstrike.com/creating-a-newsletter-manager-with-turso-and-qwik-675e42126897
+[join the Turso private beta]: https://chiselstrike.com/
+[Download and install SQLite]: https://www.sqlite.org/download.html
+[QwikCity]: https://qwik.builder.io/qwikcity/overview/
+[Qwik routing docs]: https://qwik.builder.io/qwikcity/routing/overview/
+[Vite public directory]: https://vitejs.dev/guide/assets.html#the-public-directory
+[Vite's development server]: https://vitejs.dev/
+[MIT license]: https://en.wikipedia.org/wiki/MIT_License
+
+[Turso db shell command]: https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/Turso_edge_db_url_-_db_shell_command.jpg
+[Turso db list command]: https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192235/chiselstrike-assets/Turso_edge_db_url_-_db_list_command.jpg
+[SQLite database creation]: https://res.cloudinary.com/djx5h4cjt/image/upload/v1678192236/chiselstrike-assets/SQLite3_database_creation.jpg
