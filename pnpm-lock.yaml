@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@builder.io/qwik': 0.20.0
   '@builder.io/qwik-city': 0.5.0
-  '@libsql/client': ^0.0.5
+  '@libsql/client': ^0.0.7
   '@types/eslint': 8.21.1
   '@types/node': ^18.14.2
   '@types/node-fetch': latest
@@ -22,7 +22,7 @@ specifiers:
   vite-tsconfig-paths: 3.5.0
 
 dependencies:
-  '@libsql/client': 0.0.5
+  '@libsql/client': 0.0.7
 
 devDependencies:
   '@builder.io/qwik': 0.20.0_undici@5.20.0
@@ -316,11 +316,12 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@libsql/client/0.0.5:
-    resolution: {integrity: sha512-+c5sEbAgU8dje0QQPC9CD7WTfeUcjWpgFPjgEo4DYHWGD8KeRxX5N2XPMmu5qTbKErn2+qV9jTTQDG8JcC22zQ==}
+  /@libsql/client/0.0.7:
+    resolution: {integrity: sha512-VUi4mnuASqR8LCKwaNpqq4kzHhwAfkk5t0iVvPdIK7sHrMXpHg2UBH/KXwVlPpokSiYgudnc8Psa88xPM0qq3A==}
     dependencies:
       better-sqlite3: 8.1.0
       cross-fetch: 3.1.5
+      js-base64: 3.7.5
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -1531,6 +1532,10 @@ packages:
   /isexe/2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
+
+  /js-base64/3.7.5:
+    resolution: {integrity: sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==}
+    dev: false
 
   /js-sdsl/4.3.0:
     resolution: {integrity: sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ==}
