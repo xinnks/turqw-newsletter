@@ -1,7 +1,7 @@
 import { component$, useSignal, useStore } from "@builder.io/qwik";
 import { type DocumentHead, server$ } from "@builder.io/qwik-city";
 import { responseDataAdapter } from "./utils";
-import { connect } from "@libsql/client";
+import { createClient } from "@libsql/client";
 
 const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
 
@@ -19,7 +19,7 @@ export const subscribeToNewsletter = server$(
       };
     }
 
-    const db = connect({
+    const db = createClient({
       url: import.meta.env.VITE_DB_URL,
     });
 

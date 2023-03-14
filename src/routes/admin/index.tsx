@@ -1,9 +1,9 @@
 import { $, component$, Resource, useResource$ } from "@builder.io/qwik";
 import { type DocumentHead } from "@builder.io/qwik-city";
-import { connect } from "@libsql/client";
+import { createClient } from "@libsql/client";
 import { type NewsletterSubscriber, responseDataAdapter } from "~/routes/utils";
 import { LoadingAnimation, Noty } from "..";
-const db = connect({
+const db = createClient({
   url: import.meta.env.VITE_DB_URL,
 });
 

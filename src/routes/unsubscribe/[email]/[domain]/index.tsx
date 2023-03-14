@@ -5,7 +5,7 @@ import {
   useStore,
 } from "@builder.io/qwik";
 import { type DocumentHead, server$, useLocation } from "@builder.io/qwik-city";
-import { connect } from "@libsql/client";
+import { createClient } from "@libsql/client";
 import { LoadingAnimation, Noty } from "~/routes";
 
 export default component$(() => {
@@ -24,7 +24,7 @@ export default component$(() => {
    * @returns {Object}
    */
   const unsubscribeFromNewsletter = server$(async () => {
-    const db = connect({
+    const db = createClient({
       url: import.meta.env.VITE_DB_URL,
     });
     const deleteRecord = await db.execute(
