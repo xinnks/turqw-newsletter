@@ -27,7 +27,7 @@ export const useSubscribe = routeAction$(
       if (!subscriber[0]) {
         throw error(400, "Sorry something isn't right, please retry!");
       }
-      throw redirect(302, "/admin");
+      throw redirect(302, "/");
     } catch (err: any) {
       if (err.message) {
         throw error(500, err.message);
