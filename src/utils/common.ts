@@ -1,4 +1,14 @@
-import type { ResultSet, SqlValue } from "@libsql/client";
+/**
+ * @description Formats date to dd/MM/YYYY format
+ * @param {Number} dateInt - Unix time
+ * @returns {String}
+ */
+export const formatDate = (dateInt: number) => {
+  const date = new Date(dateInt * 1000);
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+};
+
+import type { ResultSet } from "@libsql/client";
 
 /***
  * @description Adapter for formatting db query results to proper objects for json responses
@@ -13,7 +23,7 @@ export function responseDataAdapter(data: ResultSet): NewsletterSubscriber[] {
   const formattedData: NewsletterSubscriber[] = [];
 
   for (const row of rows) {
-    const rowData: { [k: string]: SqlValue } = {};
+    const rowData: { [k: string]: any } = {};
     for (let i = 0; i < columns.length; i++) {
       rowData[columns[i]] = row[i];
     }
