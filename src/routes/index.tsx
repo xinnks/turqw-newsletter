@@ -1,7 +1,7 @@
 import { component$, useSignal, useStore } from "@builder.io/qwik";
 import { type DocumentHead, server$ } from "@builder.io/qwik-city";
 import { responseDataAdapter } from "./utils";
-import { createClient } from "@libsql/client";
+import { getDB } from "~/utils/db";
 
 const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
 
@@ -10,6 +10,7 @@ const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
  * @param {string} email
  * @param {string} newsletter
  */
+
 export const subscribeToNewsletter = server$(
   async (email: string, newsletter: string) => {
     if (!email || !newsletter) {
@@ -19,21 +20,19 @@ export const subscribeToNewsletter = server$(
       };
     }
 
-    const db = createClient({
-      url: import.meta.env.VITE_DB_URL,
-    });
+    const db = getDB();
 
     // Insert record
-    await db.execute("insert into newsletters(email, website) values(?, ?)", [
-      email,
-      newsletter,
-    ]);
+    await db.execute({
+      sql: "insert into newsletters(email, website) values(?, ?)",
+      args: [email, newsletter],
+    });
 
     // Query record
-    const response = await db.execute(
-      "select * from newsletters where email = ? and website = ?",
-      [email, newsletterBlog]
-    );
+    const response = await db.execute({
+      sql: "select * from newsletters where email = ? and website = ?",
+      args: [email, newsletterBlog],
+    });
 
     const subscriber = responseDataAdapter(response);
 
