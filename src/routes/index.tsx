@@ -9,22 +9,8 @@ import { responseDataAdapter } from "~/utils/common";
 import { getDB } from "~/utils/db";
 
 export const useSubscribe = routeAction$(
-  async ({ email }, { error, fail, env }) => {
-    const newsletter = env.get("NEWSLETTER_BLOG");
-    const emailRegex = /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi;
-
-    if (!email) {
-      return fail(400, {
-        success: false,
-        message: "Email cannot be empty!",
-      });
-    }
-    if (!emailRegex.test(email)) {
-      return fail(400, {
-        success: false,
-        message: "Email not valid",
-      });
-    }
+  async ({ email }, { error, redirect, env }) => {
+    const newsletter = env.get("NEWSLETTER_BLOG")!;
     const db = getDB();
 
     try {
@@ -39,15 +25,9 @@ export const useSubscribe = routeAction$(
       });
       const subscriber = responseDataAdapter(response);
       if (!subscriber[0]) {
-        return fail(400, {
-          success: false,
-          message: "Sorry something isn't right, please retry!",
-        });
+        throw error(400, "Sorry something isn't right, please retry!");
       }
-      return {
-        success: true,
-        message: "You've been subscribed!",
-      };
+      throw redirect(302, "/admin");
     } catch (err: any) {
       if (err.message) {
         throw error(500, err.message);
@@ -59,17 +39,6 @@ export const useSubscribe = routeAction$(
     email: z.string(),
   }))
 );
-
-/**
- * @description Notification component
- */
-export const Noty = (props: { type: string; message: string }) => {
-  const styles = () =>
-    props.type === "success"
-      ? "p-4 text-green-800 bg-green-200"
-      : "p-4 text-red-800 bg-red-200";
-  return <div class={styles()}>{props.message}</div>;
-};
 
 /**
  * @description Loading animation component
@@ -111,22 +80,18 @@ export default component$(() => {
           class="p-4 outline outline-purple-700 rounded-l-md w-3/5 font-mono text-purple-800"
           name="email"
           type="email"
+          required
         />
         <button
           class="p-4 font-sans text-xl outline outline-purple-600 bg-violet-800 hover:bg-violet-700 text-white active:bg-violet-900 rounded-r-md w-2/5"
           type="submit"
+          aria-disabled={subscribe.isRunning}
+          disabled={subscribe.isRunning}
         >
           Subscribe
         </button>
       </Form>
       <div>{subscribe.isRunning && <LoadingAnimation />}</div>
-
-      {subscribe.value && (
-        <Noty
-          message={subscribe.value?.message}
-          type={subscribe.value?.success ? "success" : ""}
-        ></Noty>
-      )}
     </div>
   );
 });

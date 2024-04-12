@@ -16,6 +16,7 @@ export const useUnsubscribe = routeLoader$(async ({ params, error }) => {
   }
 });
 export default component$(() => {
+  useUnsubscribe();
   return (
     <div class="flex flex-col py-32 justify-center items-center space-y-4">
       <h1 class="p-4 text-5xl font-bold gradient-text">The TurQw Newsletter</h1>
