@@ -1,64 +1,44 @@
-import { component$, useSignal, useStore } from "@builder.io/qwik";
-import { type DocumentHead, server$ } from "@builder.io/qwik-city";
-import { responseDataAdapter } from "./utils";
-import { createClient } from "@libsql/client";
+import { component$ } from "@builder.io/qwik";
+import {
+  type DocumentHead,
+  routeAction$,
+  Form,
+  zod$,
+} from "@builder.io/qwik-city";
+import { responseDataAdapter } from "~/utils/common";
+import { getDB } from "~/utils/db";
 
-const newsletterBlog = import.meta.env.VITE_NEWSLETTER_BLOG;
+export const useSubscribe = routeAction$(
+  async ({ email }, { error, redirect, env }) => {
+    const newsletter = env.get("NEWSLETTER_BLOG")!;
+    const db = getDB();
 
-/**
- * @description Stores user subscription data into database
- * @param {string} email
- * @param {string} newsletter
- */
-export const subscribeToNewsletter = server$(
-  async (email: string, newsletter: string) => {
-    if (!email || !newsletter) {
-      return {
-        success: false,
-        message: "Email cannot be empty!",
-      };
+    try {
+      // Insert record
+      await db.execute({
+        sql: "insert into newsletters(email, website) values(?, ?)",
+        args: [email, newsletter],
+      });
+      const response = await db.execute({
+        sql: "select * from newsletters where email = ? and website = ?",
+        args: [email, newsletter],
+      });
+      const subscriber = responseDataAdapter(response);
+      if (!subscriber[0]) {
+        throw error(400, "Sorry something isn't right, please retry!");
+      }
+      throw redirect(302, "/");
+    } catch (err: any) {
+      if (err.message) {
+        throw error(500, err.message);
+      }
+      throw err;
     }
-
-    const db = createClient({
-      url: import.meta.env.VITE_DB_URL,
-    });
-
-    // Insert record
-    await db.execute("insert into newsletters(email, website) values(?, ?)", [
-      email,
-      newsletter,
-    ]);
-
-    // Query record
-    const response = await db.execute(
-      "select * from newsletters where email = ? and website = ?",
-      [email, newsletterBlog]
-    );
-
-    const subscriber = responseDataAdapter(response);
-
-    return subscriber[0]
-      ? {
-          success: true,
-          message: "You've been subscribed!",
-        }
-      : {
-          success: false,
-          message: "Sorry something isn't right, please retry!",
-        };
-  }
+  },
+  zod$((z) => ({
+    email: z.string(),
+  }))
 );
-
-/**
- * @description Notification component
- */
-export const Noty = (props: { type: string; message: string }) => {
-  const styles = () =>
-    props.type === "success"
-      ? "p-4 text-green-800 bg-green-200"
-      : "p-4 text-red-800 bg-red-200";
-  return <div class={styles()}>{props.message}</div>;
-};
 
 /**
  * @description Loading animation component
@@ -79,13 +59,7 @@ export const LoadingAnimation = () => {
 };
 
 export default component$(() => {
-  const email = useSignal("");
-  const loading = useSignal(false);
-  const emailRegex = /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi;
-  const notification = useStore({
-    message: "",
-    status: "",
-  });
+  const subscribe = useSubscribe();
 
   return (
     <div class="flex flex-col py-32 px-8 justify-center items-center">
@@ -98,44 +72,26 @@ export default component$(() => {
         </p>
         <hr />
       </div>
-      <form
+      <Form
+        action={subscribe}
         class="flex justify-center p-4 w-full md:w-3/4 lg:w-5/6 max-w-3xl"
-        preventdefault:submit
-        onSubmit$={async () => {
-          if (!emailRegex.test(email.value)) {
-            alert("Email not valid!");
-            return;
-          }
-          loading.value = true;
-          const response = await subscribeToNewsletter(
-            email.value,
-            newsletterBlog
-          );
-          loading.value = false;
-          notification.message = response.message;
-          notification.status = response.success ? "success" : "error";
-        }}
       >
         <input
           class="p-4 outline outline-purple-700 rounded-l-md w-3/5 font-mono text-purple-800"
-          onInput$={(e) => {
-            email.value = (e.target as HTMLInputElement).value;
-          }}
           name="email"
           type="email"
+          required
         />
         <button
           class="p-4 font-sans text-xl outline outline-purple-600 bg-violet-800 hover:bg-violet-700 text-white active:bg-violet-900 rounded-r-md w-2/5"
           type="submit"
+          aria-disabled={subscribe.isRunning}
+          disabled={subscribe.isRunning}
         >
           Subscribe
         </button>
-      </form>
-      <div>{loading.value && <LoadingAnimation />}</div>
-
-      {notification.message && (
-        <Noty message={notification.message} type={notification.status}></Noty>
-      )}
+      </Form>
+      <div>{subscribe.isRunning && <LoadingAnimation />}</div>
     </div>
   );
 });

@@ -1,47 +1,29 @@
-import { $, component$, Resource, useResource$ } from "@builder.io/qwik";
-import { type DocumentHead } from "@builder.io/qwik-city";
-import { createClient } from "@libsql/client";
-import { type NewsletterSubscriber, responseDataAdapter } from "~/routes/utils";
-import { LoadingAnimation, Noty } from "..";
-const db = createClient({
-  url: import.meta.env.VITE_DB_URL,
-});
+import { component$ } from "@builder.io/qwik";
+import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
+import {
+  type NewsletterSubscriber,
+  responseDataAdapter,
+  formatDate,
+} from "~/utils/common";
+import { getDB } from "~/utils/db";
 
-interface ResourceResponse {
-  message: string;
-  data: NewsletterSubscriber[];
-}
-
-/**
- * @description Formats date to dd/MM/YYYY format
- * @param {Number} dateInt - Unix time
- * @returns {String}
- */
-export const formatDate = $((dateInt: number) => {
-  const date = new Date(dateInt * 1000);
-  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+export const useSubscribers = routeLoader$(async ({ error }) => {
+  try {
+    const db = getDB();
+    const response = await db.execute("select * from newsletters");
+    const subscribers = responseDataAdapter(response);
+    return subscribers;
+  } catch (err: any) {
+    if (err.message) {
+      throw error(500, err.message);
+    }
+    throw err;
+  }
 });
 
 export default component$(() => {
-  /**
-   * @description Fetches subscribers from the database
-   * @returns {Object}
-   */
-  const subscribersResource = useResource$<ResourceResponse>(async () => {
-    const response = await db.execute("select * from newsletters");
+  const subscribers = useSubscribers();
 
-    const subscribers = response?.success ? responseDataAdapter(response) : [];
-
-    return {
-      message: "Fetched subscribers",
-      data: subscribers,
-    };
-  });
-
-  /**
-   * @description Subscriber rows extracted component
-   * @returns
-   */
   const subscriberRows = (subscribers: NewsletterSubscriber[]) => {
     return subscribers?.length < 1 ? (
       <tr>
@@ -73,27 +55,17 @@ export default component$(() => {
   return (
     <div class="flex flex-col space-y-8 p-8 justify-center items-center max-w-4xl mx-auto">
       <h1 class="text-2xl font-semibold">Newsletter Subscribers</h1>
-
-      <Resource
-        value={subscribersResource}
-        onRejected={() => (
-          <Noty message="Failed to fetch subscribers" type="error"></Noty>
-        )}
-        onPending={() => <LoadingAnimation />}
-        onResolved={(res: ResourceResponse) => (
-          <table class="min-w-full text-left text-sm font-light">
-            <thead class="border-b font-medium dark:border-neutral-500">
-              <tr>
-                <th class="px-6 py-4">No.</th>
-                <th class="px-6 py-4">Email</th>
-                <th class="px-6 py-4">Website</th>
-                <th class="px-6 py-4">Joined</th>
-              </tr>
-            </thead>
-            <tbody>{subscriberRows(res.data)}</tbody>
-          </table>
-        )}
-      ></Resource>
+      <table class="min-w-full text-left text-sm font-light">
+        <thead class="border-b font-medium dark:border-neutral-500">
+          <tr>
+            <th class="px-6 py-4">No.</th>
+            <th class="px-6 py-4">Email</th>
+            <th class="px-6 py-4">Website</th>
+            <th class="px-6 py-4">Joined</th>
+          </tr>
+        </thead>
+        <tbody>{subscriberRows(subscribers.value)}</tbody>
+      </table>
     </div>
   );
 });
